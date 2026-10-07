@@ -1,0 +1,20 @@
+# dependencies
+node_modules
+
+# build output
+dist
+
+# secrets / environment
+.env
+.env.*
+!.env.example
+
+# firebase
+.firebase/
+firebase-debug.log*
+
+# logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+node_modules
