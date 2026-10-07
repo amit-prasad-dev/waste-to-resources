@@ -16,9 +16,9 @@ export default function Impact() {
   return (
     <>
       <div className="page-head"><h1>Impact Dashboard 🌱</h1><p className="muted">What our campus has saved from the bin.</p></div>
-      <div className="card hero-kpi"><div className="num">{m.kg} kg</div><div>Estimated waste diverted</div></div>
+      <div className="card top-kpi"><div className="num">{m.kg} kg</div><div className="muted">Estimated waste diverted</div></div>
       <div className="kpis">{kpis.map(([l, v]) => <div key={l} className="card kpi"><div className="num">{v}</div><div className="muted">{l}</div></div>)}</div>
-      <div className="card"><h3>Waste diverted by category</h3>
+      <div className="card"><h4 style={{ margin: '0 0 1.2rem' }}>Waste diverted by category</h4>
         {Object.keys(m.byCat).length === 0 ? <p className="muted">Complete a transaction to see data here.</p> :
           <div className="bars">{Object.entries(m.byCat).sort((a, b) => b[1] - a[1]).map(([c, v]) => (
             <div key={c} className="bar-row"><span>{c}</span>

@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
-
+import ThemeToggle from './ThemeToggle'
 const links = [
   { to: '/dashboard', label: 'Home', icon: '🏠' },
   { to: '/browse', label: 'Browse', icon: '🔍' },
@@ -28,6 +28,7 @@ export default function Layout() {
           ))}
         </nav>
         <div className="sidebar-foot">
+          <ThemeToggle />
           <div className="muted small">{profile?.name || user?.email}</div>
           <button className="btn ghost" onClick={logout}>Logout</button>
         </div>
@@ -36,7 +37,10 @@ export default function Layout() {
       <div className="main">
         <header className="topbar">
           <span className="brand-sm">♻️ Waste-to-Resources</span>
-          <button className="btn ghost small" onClick={logout}>Logout</button>
+          <div style={{display:'flex', gap:'.5rem', alignItems:'center'}}>
+            <ThemeToggle />
+            <button className="btn ghost small" onClick={logout}>Logout</button>
+          </div>
         </header>
         <main className="content"><Outlet /></main>
       </div>

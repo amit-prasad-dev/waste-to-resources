@@ -1,16 +1,16 @@
 .kpis { display: grid; gap: .8rem; grid-template-columns: repeat(2, 1fr); margin: 1rem 0; }
-.kpi .num { font-size: 1.7rem; font-weight: 800; color: var(--g); }
-.hero-kpi { background: linear-gradient(135deg, var(--g), var(--g-dark)); color: #fff; border: 0; }
-.hero-kpi .num { color: #fff; font-size: 2.4rem; }
+.kpi .num { font-size: 1.7rem; font-weight: 800; color: var(--primary); }
+.top-kpi { margin-bottom: 1rem; padding: 1.5rem; }
+.top-kpi .num { font-size: 2.8rem; font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: 0.2rem; }
 .bars { display: grid; gap: .6rem; }
 .bar-row { display: grid; grid-template-columns: 110px 1fr 56px; gap: .6rem; align-items: center; font-size: .85rem; }
-.bar-track { background: var(--g-soft); border-radius: 99px; height: 12px; overflow: hidden; }
-.bar-fill { background: var(--g); height: 100%; border-radius: 99px; }
+.bar-track { background: var(--primary-soft); border-radius: 99px; height: 12px; overflow: hidden; }
+.bar-fill { background: var(--primary); height: 100%; border-radius: 99px; }
 .tabs.scroll { overflow-x: auto; }
 .tabs.scroll button { flex: 0 0 auto; padding: .6rem 1rem; }
 .tbl { overflow-x: auto; }
 .tbl table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-.tbl th, .tbl td { text-align: left; padding: .6rem .5rem; border-bottom: 1px solid var(--line); white-space: nowrap; }
-.tbl th { color: var(--muted); font-weight: 600; }
+.tbl th, .tbl td { text-align: left; padding: .6rem .5rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.tbl th { color: var(--text-muted); font-weight: 600; }
 @media (min-width: 640px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1024px) { .kpis { grid-template-columns: repeat(4, 1fr); } }

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CATEGORIES } from '../constants'
+import ThemeToggle from '../components/ThemeToggle'
 import '../landing.css'
-
 const ICONS = { 'Books': '📚', 'Stationery': '✏️', 'Paper & Cardboard': '📄', 'Clothes': '👕', 'Furniture': '🪑', 'Plastic': '🧴', 'Metal': '🔩', 'Glass': '🪟', 'E-Waste': '💻', 'Batteries': '🔋', 'Other': '📦' }
 const STEPS = [['Post', 'List items you no longer need: books, electronics, furniture, or recyclables.'],
   ['Browse', 'Explore available resources by category, condition, or location on campus.'],
@@ -20,7 +20,7 @@ export default function Landing() {
         <nav className="lp-links">
           <a href="#top">Home</a><Link to="/browse">Browse Resources</Link><a href="#how">How It Works</a><a href="#learn">Learn & Recycle</a>
         </nav>
-        <div className="lp-cta"><Link to="/login" className="lp-login">Log In</Link><Link to="/register" className="btn small">Get Started</Link></div>
+        <div className="lp-cta"><ThemeToggle /><Link to="/login" className="lp-login">Log In</Link><Link to="/register" className="btn small">Get Started</Link></div>
       </header>
 
       <section id="top" className="hero">
@@ -50,14 +50,28 @@ export default function Landing() {
       <section className="band">
         <h2>Ready to make a difference?</h2>
         <p>Join our growing campus community. List your unused items, find what you need, and help build a more sustainable college.</p>
-        <div className="row center-row"><Link to="/register" className="btn">Create Your Account →</Link><a href="#how" className="btn outline light">Learn More</a></div>
+        <div className="row center-row"><Link to="/register" className="btn">Create Your Account →</Link><a href="#how" className="btn outline">Learn More</a></div>
       </section>
 
       <footer className="lp-foot">
-        <div><div className="lp-logo light">♻️ Waste<b>2</b>Resources</div><p><i>From Waste to Resource — Reuse, Share & Recycle.</i></p>
-          <p className="small">A college community platform for donating, exchanging, reusing and recycling resources responsibly.</p></div>
-        <div><h5>Quick Links</h5><a href="#top">Home</a><Link to="/browse">Browse Resources</Link><a href="#how">How It Works</a><a href="#learn">Learn & Recycle</a></div>
-        <div><h5>Account</h5><Link to="/login">Log In</Link><Link to="/register">Register</Link><Link to="/dashboard">Dashboard</Link></div>
+        <div>
+          <div className="lp-logo">♻️ Waste<b>2</b>Resources</div>
+          <p><i>From Waste to Resource — Reuse, Share & Recycle.</i></p>
+          <p className="small">A college community platform for donating, exchanging, reusing and recycling resources responsibly.</p>
+        </div>
+        <div>
+          <h5>Quick Links</h5>
+          <a href="#top">Home</a><Link to="/browse">Browse Resources</Link><a href="#how">How It Works</a><a href="#learn">Learn & Recycle</a>
+        </div>
+        <div>
+          <h5>Account</h5>
+          <Link to="/login">Log In</Link><Link to="/register">Register</Link><Link to="/dashboard">Dashboard</Link>
+        </div>
+        <div>
+          <h5>Contact</h5>
+          <p>📍 College, Campus</p>
+          <p>✉ <a href="mailto:amitprasads1160@gmail.com">amitprasads1160@gmail.com</a></p>
+        </div>
         <p className="copy">© 2026 Waste to Resources. All rights reserved. · Digital Waste-to-Resources Platform for College</p>
       </footer>
     </div>
