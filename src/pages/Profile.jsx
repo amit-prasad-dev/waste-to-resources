@@ -11,13 +11,13 @@ const YEARS = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate']
 
 export default function Profile() {
   const { user, profile, refreshProfile, isAdmin, logout } = useAuth()
-  const [f, setF] = useState({ name: '', department: '', year: '' })
+  const [f, setF] = useState({ name: '', userType: 'student', department: '', year: '' })
   const [stats, setStats] = useState(null)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState(null)
   const set = k => e => setF({ ...f, [k]: e.target.value })
 
-  useEffect(() => { if (profile) setF({ name: profile.name || '', department: profile.department || '', year: profile.year || '' }) }, [profile])
+  useEffect(() => { if (profile) setF({ name: profile.name || '', userType: profile.userType || 'student', department: profile.department || '', year: profile.year || '' }) }, [profile])
 
   useEffect(() => { (async () => {
     const n = async (col, field) => (await getDocs(query(collection(db, col), where(field, '==', user.uid)))).docs.map(d => d.data())
@@ -28,7 +28,7 @@ export default function Profile() {
   const save = async e => {
     e.preventDefault(); setBusy(true); setMsg(null)
     try {
-      const data = { name: f.name.trim(), department: f.department, year: profile?.userType === 'student' ? f.year : '' }
+      const data = { name: f.name.trim(), userType: f.userType, department: f.department, year: f.userType === 'student' ? f.year : '' }
       await updateDoc(doc(db, 'users', user.uid), data)
       await updateProfile(auth.currentUser, { displayName: data.name })
       await refreshProfile?.()
@@ -69,10 +69,12 @@ export default function Profile() {
         <h3 style={{ marginTop: 0 }}>Personal details</h3>
         <label>Full name<input required value={f.name} onChange={set('name')} /></label>
         <label>Email<input className="ro" value={user.email} readOnly /></label>
+        <label>I am a<select value={f.userType} onChange={set('userType')}>
+          <option value="student">Student</option><option value="faculty">Faculty</option><option value="staff">Staff</option></select></label>
         <div className="two">
           <label>Department<select value={f.department} onChange={set('department')}>
             <option value="">Select department</option>{DEPTS.map(d => <option key={d}>{d}</option>)}</select></label>
-          {profile.userType === 'student' &&
+          {f.userType === 'student' &&
             <label>Year<select value={f.year} onChange={set('year')}>
               <option value="">Select year</option>{YEARS.map(y => <option key={y}>{y}</option>)}</select></label>}
         </div>

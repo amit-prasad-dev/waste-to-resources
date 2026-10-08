@@ -4,6 +4,7 @@ import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useAuth } from '../AuthContext'
 import AuthShell from '../components/AuthShell'
+import GoogleButton from '../components/GoogleButton'
 
 export default function Login() {
   const { user, login } = useAuth()
@@ -34,6 +35,8 @@ export default function Login() {
         <div className="between"><span /><button type="button" className="link" onClick={forgot}>Forgot password?</button></div>
         {err && <div className="error">{err}</div>}{msg && <div className="ok">{msg}</div>}
         <button className="btn full" disabled={busy}>{busy ? 'Please wait…' : 'Log In'}</button>
+        <div className="divider">or</div>
+        <GoogleButton label="Continue with Google" />
         <p className="center-text muted">Don't have an account? <Link to="/register">Create one</Link></p>
       </form>
     </AuthShell>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import AuthShell from '../components/AuthShell'
+import GoogleButton from '../components/GoogleButton'
 
 const DEPTS = ['Computer Science', 'Information Technology', 'Mechanical', 'Civil', 'Electrical', 'Electronics', 'Science', 'Commerce', 'Arts', 'Administration', 'Other']
 const YEARS = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'Postgraduate']
@@ -43,6 +44,8 @@ export default function Register() {
           <span>I agree to use this platform responsibly and in accordance with the college's community guidelines.</span></label>
         {err && <div className="error">{err}</div>}
         <button className="btn full" disabled={busy}>{busy ? 'Please wait…' : 'Create Account'}</button>
+        <div className="divider">or</div>
+        <GoogleButton label="Sign up with Google" />
         <p className="center-text muted">Already have an account? <Link to="/login">Log in</Link></p>
       </form>
     </AuthShell>
