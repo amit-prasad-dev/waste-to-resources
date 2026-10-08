@@ -2,6 +2,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import ThemeToggle from './ThemeToggle'
 import NotificationBell from './NotificationBell'
+import ProfileButton from './ProfileButton'
 const links = [
   { to: '/dashboard', label: 'Home', icon: '🏠' },
   { to: '/browse', label: 'Browse', icon: '🔍' },
@@ -33,18 +34,17 @@ export default function Layout() {
             <NotificationBell />
             <ThemeToggle />
           </div>
-          <div className="muted small">{profile?.name || user?.email}</div>
-          <button className="btn ghost" onClick={logout}>Logout</button>
+          <ProfileButton showName />
         </div>
       </aside>
 
       <div className="main">
         <header className="topbar">
           <span className="brand-sm">♻️ Waste-to-Resources</span>
-          <div style={{display:'flex', gap:'.5rem', alignItems:'center'}}>
+          <div style={{display:'flex', gap:'.4rem', alignItems:'center', flexShrink: 0}}>
             <NotificationBell />
             <ThemeToggle />
-            <button className="btn ghost small" onClick={logout}>Logout</button>
+            <ProfileButton />
           </div>
         </header>
         <main className="content"><Outlet /></main>

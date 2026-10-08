@@ -21,6 +21,12 @@ export function AuthProvider({ children }) {
     setLoading(false)
   }), [])
 
+  const refreshProfile = async () => {
+    if (!user) return
+    const snap = await getDoc(doc(db, 'users', user.uid))
+    setProfile(snap.exists() ? snap.data() : null)
+  }
+
   const login = (email, pw) => signInWithEmailAndPassword(auth, email, pw)
 
   const register = async (name, email, pw, extra = {}) => {
@@ -33,6 +39,6 @@ export function AuthProvider({ children }) {
 
   const logout = () => signOut(auth)
 
-  return <Ctx.Provider value={{ user, profile, loading, login, register, logout,
+  return <Ctx.Provider value={{ user, profile, loading, login, register, logout, refreshProfile,
     isAdmin: profile?.role === 'admin' }}>{children}</Ctx.Provider>
 }
