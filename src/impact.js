@@ -1,17 +1,20 @@
 import { WEIGHTS } from './constants'
+// Units handed over for an item (supports older items without completedCount)
+const units = i => i.completedCount ?? (i.status === 'completed' ? (i.quantity || 1) : 0)
+
 export function impact(items) {
-  const done = items.filter(i => i.status === 'completed')
   const byCat = {}
-  let kg = 0
-  done.forEach(i => {
-    const w = (WEIGHTS[i.category] || 0.5) * (i.quantity || 1)
+  let kg = 0, reused = 0, donated = 0, exchanged = 0, recycled = 0
+  items.forEach(i => {
+    const u = units(i)
+    if (!u) return
+    reused += u
+    if (i.action === 'Donate') donated += u
+    if (i.action === 'Exchange') exchanged += u
+    if (i.action === 'Recycle') recycled += u
+    const w = (WEIGHTS[i.category] || 0.5) * u
     kg += w; byCat[i.category] = (byCat[i.category] || 0) + w
   })
-  return {
-    total: items.length, available: items.filter(i => i.status === 'available').length,
-    reused: done.length, donated: done.filter(i => i.action === 'Donate').length,
-    exchanged: done.filter(i => i.action === 'Exchange').length,
-    recycled: done.filter(i => i.action === 'Recycle').length,
-    kg: Math.round(kg * 10) / 10, byCat,
-  }
+  return { total: items.length, available: items.filter(i => i.status === 'available').length,
+    reused, donated, exchanged, recycled, kg: Math.round(kg * 10) / 10, byCat }
 }

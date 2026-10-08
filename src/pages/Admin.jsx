@@ -24,7 +24,7 @@ export default function Admin() {
   const removeFromReport = async r => { await deleteDoc(doc(db, 'items', r.itemId)); await deleteDoc(doc(db, 'reports', r.id)); load() }
 
   const kpis = [['Total Users', d.users.length], ['Total Listings', d.items.length], ['Active Listings', m.available],
-    ['Pending Requests', d.requests.filter(r => r.status === 'pending').length],
+    ['Active Requests', d.requests.filter(r => r.status === 'accepted' || r.status === 'handover').length],
     ['Completed', d.requests.filter(r => r.status === 'completed').length],
     ['Open Reports', d.reports.length], ['Waste Diverted', m.kg + ' kg'], ['Items Recycled', m.recycled]]
   const tabs = [['overview', 'Overview'], ['users', 'Users'], ['listings', 'Listings'], ['requests', 'Requests'], ['reports', `Reports (${d.reports.length})`]]

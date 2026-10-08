@@ -11,6 +11,7 @@ import MyListings from './pages/MyListings'
 import MyRequests from './pages/MyRequests'
 import Impact from './pages/Impact'
 import Admin from './pages/Admin'
+import Notifications from './pages/Notifications'
 import './day2.css'
 import './day3.css'
 
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="my-listings" element={<MyListings />} />
         <Route path="my-requests" element={<MyRequests />} />
         <Route path="impact" element={<Impact />} />
+        <Route path="notifications" element={<Notifications />} />
         <Route path="admin" element={<Protected admin><Admin /></Protected>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

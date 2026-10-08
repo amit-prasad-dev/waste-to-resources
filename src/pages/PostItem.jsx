@@ -4,13 +4,14 @@ import { addDoc, collection, doc, getDoc, updateDoc, serverTimestamp } from 'fir
 import { db } from '../firebase'
 import { useAuth } from '../AuthContext'
 import { CATEGORIES, CONDITIONS, ACTIONS } from '../constants'
+import { notifyWatchersNewPost } from '../notify'
 
 export default function PostItem() {
-  const { id } = useParams()            // present when editing
+  const { id } = useParams()
   const { user, profile } = useAuth()
   const nav = useNavigate()
-  const [f, setF] = useState({ title: '', category: 'Books', description: '', quantity: 1,
-    condition: 'Good', location: '', action: 'Donate' })
+  const [f, setF] = useState({ title: '', category: 'Books', description: '', quantity: 1, condition: 'Good', location: '', action: 'Donate' })
+  const [old, setOld] = useState(null)
   const [loading, setLoading] = useState(!!id)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -19,10 +20,9 @@ export default function PostItem() {
   useEffect(() => {
     if (!id) return
     getDoc(doc(db, 'items', id)).then(s => {
-      if (!s.exists() || s.data().ownerId !== user.uid || s.data().status !== 'available') return nav('/my-listings')
-      const d = s.data()
-      setF({ title: d.title, category: d.category, description: d.description || '', quantity: d.quantity,
-        condition: d.condition, location: d.location, action: d.action })
+      if (!s.exists() || s.data().ownerId !== user.uid || s.data().status === 'completed') return nav('/my-listings')
+      const d = s.data(); setOld(d)
+      setF({ title: d.title, category: d.category, description: d.description || '', quantity: d.quantity, condition: d.condition, location: d.location, action: d.action })
       setLoading(false)
     })
   }, [id])
@@ -30,10 +30,16 @@ export default function PostItem() {
   const submit = async (e) => {
     e.preventDefault(); setBusy(true); setErr('')
     try {
-      const data = { ...f, quantity: Number(f.quantity) }
-      if (id) await updateDoc(doc(db, 'items', id), data)
-      else await addDoc(collection(db, 'items'), { ...data, ownerId: user.uid,
-        ownerName: profile?.name || user.email, status: 'available', createdAt: serverTimestamp() })
+      const qty = Math.max(1, Number(f.quantity))
+      const data = { ...f, quantity: qty }
+      if (id) {
+        const remaining = Math.max(0, (old.remaining ?? old.quantity) + (qty - old.quantity))
+        await updateDoc(doc(db, 'items', id), { ...data, remaining, status: remaining > 0 ? 'available' : 'reserved' })
+      } else {
+        const ref = await addDoc(collection(db, 'items'), { ...data, remaining: qty, completedCount: 0, ownerId: user.uid,
+          ownerName: profile?.name || user.email, status: 'available', createdAt: serverTimestamp() })
+        notifyWatchersNewPost({ id: ref.id, title: data.title, category: data.category }, user.uid).catch(() => {})
+      }
       nav('/my-listings')
     } catch (e) { setErr(e.message); setBusy(false) }
   }
@@ -49,11 +55,11 @@ export default function PostItem() {
           <label>Category<select value={f.category} onChange={set('category')}>{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></label>
           <label>Action<select value={f.action} onChange={set('action')}>{ACTIONS.map(c => <option key={c}>{c}</option>)}</select></label>
           <label>Condition<select value={f.condition} onChange={set('condition')}>{CONDITIONS.map(c => <option key={c}>{c}</option>)}</select></label>
-          <label>Quantity<input type="number" min="1" required value={f.quantity} onChange={set('quantity')} /></label>
+          <label>Quantity (units)<input type="number" min="1" required value={f.quantity} onChange={set('quantity')} /></label>
         </div>
         <label>Description<textarea rows="3" value={f.description} onChange={set('description')} placeholder="B.Sc. Physics textbook" /></label>
         <label>Pickup location<input required value={f.location} onChange={set('location')} placeholder="Library, 2nd floor" /></label>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <div className="row">
           <button className="btn" disabled={busy}>{busy ? 'Saving…' : id ? 'Save Changes' : 'Post Item'}</button>
           {id && <button type="button" className="btn ghost" onClick={() => nav('/my-listings')}>Cancel</button>}

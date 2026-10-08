@@ -5,34 +5,91 @@ service cloud.firestore {
     function isAdmin() {
       return signedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
+    function onlyStatusChanges() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+    }
+    function otpPath(id) { return /databases/$(database)/documents/otps/$(id); }
 
-    // Users: role can never be set to admin by the user themselves
     match /users/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow create: if signedIn() && request.auth.uid == uid && request.resource.data.role == 'user';
-      allow update: if signedIn() && ((request.auth.uid == uid
-                        && request.resource.data.role == resource.data.role) || isAdmin());
+      allow update: if signedIn() && (isAdmin() || (request.auth.uid == uid
+                        && request.resource.data.role == resource.data.role
+                        && request.resource.data.get('disabled', false) == resource.data.get('disabled', false)));
     }
 
-    // Items: anyone logged in can read; only owner (or admin) can edit/delete
+    // Items: owner edits freely. Any user may reserve (-1) or release (+1) exactly one unit.
     match /items/{id} {
       allow read: if signedIn();
-      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if signedIn() && (resource.data.ownerId == request.auth.uid || isAdmin());
+      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid
+                        && request.resource.data.status == 'available';
+      allow update: if signedIn() && (
+          isAdmin()
+          || (resource.data.ownerId == request.auth.uid && request.resource.data.ownerId == resource.data.ownerId)
+          || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['remaining', 'status'])
+              && resource.data.status != 'completed'
+              && request.resource.data.remaining >= 0
+              && request.resource.data.remaining <= resource.data.quantity
+              && (request.resource.data.remaining == resource.data.get('remaining', resource.data.quantity) - 1
+                  || request.resource.data.remaining == resource.data.get('remaining', resource.data.quantity) + 1)));
+      allow delete: if signedIn() && (resource.data.ownerId == request.auth.uid || isAdmin());
     }
 
-    // Requests: requester and item owner can read/update
+    // Requests: auto-accepted on creation (FIFO). Owner starts handover, then completes with the OTP.
     match /requests/{id} {
       allow read: if signedIn() && (resource.data.requesterId == request.auth.uid
                         || resource.data.ownerId == request.auth.uid || isAdmin());
       allow create: if signedIn() && request.resource.data.requesterId == request.auth.uid
-                        && request.resource.data.status == 'pending';
-      allow update: if signedIn() && (resource.data.requesterId == request.auth.uid
-                        || resource.data.ownerId == request.auth.uid || isAdmin());
+                        && request.resource.data.ownerId != request.auth.uid
+                        && request.resource.data.status == 'accepted';
+      allow update: if signedIn() && (isAdmin()
+          // cancel by requester or owner
+          || (onlyStatusChanges() && request.resource.data.status == 'cancelled'
+              && resource.data.status in ['accepted', 'handover']
+              && (resource.data.requesterId == request.auth.uid || resource.data.ownerId == request.auth.uid))
+          // owner starts handover
+          || (onlyStatusChanges() && resource.data.ownerId == request.auth.uid
+              && resource.data.status == 'accepted' && request.resource.data.status == 'handover')
+          // owner completes ONLY with the correct, unexpired OTP
+          || (resource.data.ownerId == request.auth.uid && resource.data.status == 'handover'
+              && request.resource.data.status == 'completed'
+              && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'otpInput'])
+              && exists(otpPath(id))
+              && get(otpPath(id)).data.code == request.resource.data.otpInput
+              && request.time < get(otpPath(id)).data.expiresAt
+              && get(otpPath(id)).data.attempts <= 5));
+    }
+
+    // OTP: only the receiver can read it. The owner can only count attempts.
+    match /otps/{id} {
+      allow read: if signedIn() && (resource == null || resource.data.requesterId == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.requesterId == request.auth.uid
+                        && request.resource.data.attempts == 0
+                        && get(/databases/$(database)/documents/requests/$(id)).data.requesterId == request.auth.uid
+                        && get(/databases/$(database)/documents/requests/$(id)).data.ownerId == request.resource.data.ownerId
+                        && get(/databases/$(database)/documents/requests/$(id)).data.status == 'handover';
+      allow update: if signedIn() && resource.data.ownerId == request.auth.uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['attempts'])
+                        && request.resource.data.attempts == resource.data.attempts + 1
+                        && resource.data.attempts < 5;
+      allow delete: if signedIn() && resource.data.requesterId == request.auth.uid;
+    }
+
+    match /notifications/{id} {
+      allow create: if signedIn() && request.resource.data.fromId == request.auth.uid;
+      allow read, delete: if signedIn() && resource.data.userId == request.auth.uid;
+      allow update: if signedIn() && resource.data.userId == request.auth.uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+    }
+
+    // "Notify me" subscriptions
+    match /watches/{id} {
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, delete: if signedIn();
     }
 
     match /reports/{id} {
-      allow create: if signedIn();
+      allow create: if signedIn() && request.resource.data.reporterId == request.auth.uid;
       allow read, update, delete: if isAdmin();
     }
   }
