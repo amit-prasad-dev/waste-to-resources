@@ -1,0 +1,16 @@
+.avatar-wrap { position: relative; display: inline-flex; flex-shrink: 0; }
+.avatar-dot { position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--warning, #f59e0b); border: 2px solid var(--surface, var(--card, #fff)); }
+
+.pc { background: var(--primary-soft, var(--g-soft, #e8f5ee)); border: 1px solid var(--primary, var(--g, #1b7f4b));
+  border-radius: 14px; padding: .9rem 1rem; margin: 1rem 0; color: var(--text, #17251e); }
+.pc-top { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+.pc-bar { height: 8px; border-radius: 99px; background: var(--border, var(--line, #d5ddd8)); overflow: hidden; margin: .6rem 0; }
+.pc-bar > span { display: block; height: 100%; border-radius: 99px; background: var(--primary, var(--g, #1b7f4b)); transition: width .3s; }
+.pc p { margin: 0 0 .6rem; font-size: .9rem; }
+@media (prefers-reduced-motion: reduce) { .pc-bar > span { transition: none; } }
+
+/* Avatar + full name row (desktop sidebar) */
+.profile-btn.with-name { display: flex; align-items: center; gap: .6rem; width: 100%; min-width: 0; padding: .35rem .4rem; border-radius: 12px; }
+.profile-btn.with-name:hover { background: var(--primary-soft, var(--g-soft, #e8f5ee)); }
+.pb-name { min-width: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.25; font-weight: 600; font-size: .9rem; color: var(--text, #17251e); }

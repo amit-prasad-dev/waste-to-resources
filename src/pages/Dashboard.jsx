@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useAuth } from '../AuthContext'
+import ProfileCompleteness from '../components/ProfileCompleteness'
 
 export default function Dashboard() {
   const { profile, user } = useAuth()
@@ -32,6 +33,7 @@ export default function Dashboard() {
     <>
       <h1>Welcome, {profile?.name || user?.displayName} 👋</h1>
       <p className="muted">Give unused items a second life.</p>
+      <ProfileCompleteness compact />
       <div className="grid stats">
         {stats.map(s => (
           <div key={s.label} className="card stat">

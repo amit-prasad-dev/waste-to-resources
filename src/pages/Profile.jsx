@@ -4,6 +4,7 @@ import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/fire
 import { sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { auth, db } from '../firebase'
 import { useAuth } from '../AuthContext'
+import ProfileCompleteness from '../components/ProfileCompleteness'
 import '../profile.css'
 
 const DEPTS = ['Computer Science', 'Information Technology', 'Mechanical', 'Civil', 'Electrical', 'Electronics', 'Science', 'Commerce', 'Arts', 'Administration', 'Other']
@@ -70,6 +71,8 @@ export default function Profile() {
         <Link className="btn outline small" to="/my-requests">📨 Requests</Link>
       </div>
 
+      <ProfileCompleteness />
+
       {msg && (
         <div className={msg.ok ? 'ok-msg' : 'error'} role="status" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{msg.text}</span>
@@ -77,7 +80,7 @@ export default function Profile() {
         </div>
       )}
 
-      <form className="card" onSubmit={save}>
+      <form id="personal-details" className="card" onSubmit={save}>
         <h3 style={{ marginTop: 0 }}>Personal details</h3>
         <label>Full name<input required value={f.name} onChange={set('name')} /></label>
         <label>Email<input className="ro" value={user.email} readOnly /></label>
