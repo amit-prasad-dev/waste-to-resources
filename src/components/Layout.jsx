@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle'
 import NotificationBell from './NotificationBell'
 import ProfileButton from './ProfileButton'
 import NotificationToast from './NotificationToast'
+import NewItemNotifier from './NewItemNotifier'
 
 const links = [
   { to: '/dashboard', label: 'Home', icon: '🏠' },
@@ -21,6 +22,7 @@ export default function Layout() {
 
   return (
     <div className="shell">
+      <NewItemNotifier />
       <NotificationToast />
       <aside className="sidebar">
         <div className="brand">♻️ Waste-to-Resources</div>
