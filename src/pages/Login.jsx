@@ -4,14 +4,14 @@ import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth } from '../firebase'
 import { useAuth } from '../AuthContext'
 import AuthShell from '../components/AuthShell'
-import GoogleButton from '../components/GoogleButton'
+import GoogleButton, { googleCheck } from '../components/GoogleButton'
 
 export default function Login() {
   const { user, login } = useAuth()
   const nav = useNavigate()
   const [f, setF] = useState({ email: '', pw: '' })
   const [err, setErr] = useState(''); const [msg, setMsg] = useState(''); const [busy, setBusy] = useState(false)
-  if (user) return <Navigate to="/dashboard" replace />
+  if (user && !googleCheck.active) return <Navigate to="/dashboard" replace />
 
   const submit = async e => {
     e.preventDefault(); setErr(''); setMsg(''); setBusy(true)
@@ -36,7 +36,7 @@ export default function Login() {
         {err && <div className="error">{err}</div>}{msg && <div className="ok">{msg}</div>}
         <button className="btn full" disabled={busy}>{busy ? 'Please wait…' : 'Log In'}</button>
         <div className="divider">or</div>
-        <GoogleButton label="Continue with Google" />
+        <GoogleButton mode="login" label="Continue with Google" />
         <p className="center-text muted">Don't have an account? <Link to="/register">Create one</Link></p>
       </form>
     </AuthShell>

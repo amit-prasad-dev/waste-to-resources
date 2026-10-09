@@ -10,7 +10,7 @@ export default function ProfileButton({ showName }) {
   return (
     <Link to="/profile" className="profile-btn" aria-label="Profile" title="Profile">
       <span className="avatar" aria-hidden="true">{letter}</span>
-      {showName && <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0, whiteSpace: 'nowrap' }}>{profile?.name || user?.email}</span>}
+      {showName && <span className="profile-name">{profile?.name || user?.email}</span>}
     </Link>
   )
 }

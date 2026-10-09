@@ -8,6 +8,10 @@
 .profile-btn:hover .avatar { background: var(--primary, var(--g, #1b7f4b)); color: var(--on-primary, #fff); }
 .profile-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .profile-head h1 { margin: 0; }
+.profile-name { overflow: hidden; text-overflow: ellipsis; min-width: 0; white-space: nowrap; }
+@media (min-width: 1024px) {
+  .profile-name, .profile-head h1 { white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }
+}
 .ro { opacity: .7; cursor: not-allowed; }
 .mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; margin: 1rem 0; }
 .mini div { text-align: center; padding: .8rem .4rem; border-radius: 12px; border: 1px solid var(--border, var(--line, #e1e8e4));

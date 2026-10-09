@@ -3,6 +3,8 @@ import { useAuth } from '../AuthContext'
 import ThemeToggle from './ThemeToggle'
 import NotificationBell from './NotificationBell'
 import ProfileButton from './ProfileButton'
+import NotificationToast from './NotificationToast'
+
 const links = [
   { to: '/dashboard', label: 'Home', icon: '🏠' },
   { to: '/browse', label: 'Browse', icon: '🔍' },
@@ -19,6 +21,7 @@ export default function Layout() {
 
   return (
     <div className="shell">
+      <NotificationToast />
       <aside className="sidebar">
         <div className="brand">♻️ Waste-to-Resources</div>
         <nav>

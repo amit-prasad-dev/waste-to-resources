@@ -25,6 +25,13 @@ export default function Profile() {
     setStats({ listings: items.length, requests: sent.length, completed: [...sent, ...recv].filter(r => r.status === 'completed').length })
   })() }, [])
 
+  useEffect(() => {
+    if (!msg) return
+    const ms = msg.ok ? 5000 : 8000
+    const t = setTimeout(() => setMsg(null), ms)
+    return () => clearTimeout(t)
+  }, [msg])
+
   const save = async e => {
     e.preventDefault(); setBusy(true); setMsg(null)
     try {
@@ -63,7 +70,12 @@ export default function Profile() {
         <Link className="btn outline small" to="/my-requests">📨 Requests</Link>
       </div>
 
-      {msg && <div className={msg.ok ? 'ok-msg' : 'error'} role="status">{msg.text}</div>}
+      {msg && (
+        <div className={msg.ok ? 'ok-msg' : 'error'} role="status" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>{msg.text}</span>
+          <button type="button" aria-label="Dismiss message" onClick={() => setMsg(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1, padding: '0 0 0 10px', color: 'inherit' }}>&times;</button>
+        </div>
+      )}
 
       <form className="card" onSubmit={save}>
         <h3 style={{ marginTop: 0 }}>Personal details</h3>

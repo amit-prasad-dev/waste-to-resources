@@ -1,0 +1,16 @@
+.nt-wrap { position: fixed; z-index: 1000; top: 4.5rem; left: 50%; transform: translateX(-50%); width: min(92vw, 380px); pointer-events: none; }
+.nt { pointer-events: auto; display: flex; gap: .7rem; align-items: flex-start; width: 100%; text-align: left; cursor: pointer;
+  padding: .85rem 2.4rem .85rem .9rem; position: relative; font: inherit; border-radius: 14px;
+  background: var(--surface, var(--card, #fff)); color: var(--text, #17251e);
+  border: 1px solid var(--border, var(--line, #e1e8e4)); border-left: 4px solid var(--primary, var(--g, #1b7f4b));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .18); animation: nt-in .18s ease-out; }
+.nt:focus-visible { outline: 2px solid var(--primary, var(--g, #1b7f4b)); outline-offset: 2px; }
+.nt .ico { font-size: 1.3rem; line-height: 1.2; }
+.nt strong { display: block; } .nt .msg { display: block; font-size: .88rem; color: var(--text-muted, var(--muted, #66766d)); margin-top: .1rem; }
+.nt-x { position: absolute; top: .35rem; right: .4rem; width: 28px; height: 28px; border-radius: 8px; border: 0; background: transparent;
+  color: var(--text-muted, var(--muted, #66766d)); font-size: 1.25rem; line-height: 1; cursor: pointer; }
+.nt-x:hover { background: var(--primary-soft, var(--g-soft, #e8f5ee)); color: var(--text, #17251e); }
+.nt-x:focus-visible { outline: 2px solid var(--primary, var(--g, #1b7f4b)); }
+@keyframes nt-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .nt { animation: none; } }
+@media (min-width: 1024px) { .nt-wrap { top: 1.2rem; left: auto; right: 1.4rem; transform: none; } }
