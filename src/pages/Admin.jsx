@@ -3,6 +3,7 @@ import { collection, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firesto
 import { db } from '../firebase'
 import { useAuth } from '../AuthContext'
 import { impact } from '../impact'
+import AdminMessages from '../components/AdminMessages'
 
 export default function Admin() {
   const { user } = useAuth()
@@ -27,7 +28,7 @@ export default function Admin() {
     ['Active Requests', d.requests.filter(r => r.status === 'accepted' || r.status === 'handover').length],
     ['Completed', d.requests.filter(r => r.status === 'completed').length],
     ['Open Reports', d.reports.length], ['Waste Diverted', m.kg + ' kg'], ['Items Recycled', m.recycled]]
-  const tabs = [['overview', 'Overview'], ['users', 'Users'], ['listings', 'Listings'], ['requests', 'Requests'], ['reports', `Reports (${d.reports.length})`]]
+  const tabs = [['overview', 'Overview'], ['users', 'Users'], ['listings', 'Listings'], ['requests', 'Requests'], ['reports', `Reports (${d.reports.length})`], ['messages', 'Messages']]
   const Tbl = ({ head, children }) => <div className="card tbl"><table><thead><tr>{head.map(h => <th key={h}>{h}</th>)}</tr></thead><tbody>{children}</tbody></table></div>
 
   return (
@@ -58,6 +59,8 @@ export default function Admin() {
           <p className="muted small">Reported by {r.reporterName}: {r.reason}</p>
           <div className="row"><button className="btn danger small" onClick={() => removeFromReport(r)}>Remove listing</button>
             <button className="btn ghost small" onClick={() => delReport(r.id)}>Dismiss</button></div></div>)}</div>)}
+
+      {tab === 'messages' && <AdminMessages />}
     </>
   )
 }

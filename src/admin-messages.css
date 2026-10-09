@@ -1,0 +1,10 @@
+.am-ok { background: var(--primary-soft, var(--g-soft, #e8f5ee)); color: var(--primary, #14633a); padding: .6rem .8rem;
+  border-radius: 8px; font-size: .9rem; margin-bottom: .8rem; display: flex; justify-content: space-between; gap: .6rem; }
+.am-ok button { background: none; border: 0; color: inherit; font-size: 1.1rem; cursor: pointer; line-height: 1; }
+.am-count { text-align: right; font-size: .78rem; color: var(--text-muted, var(--muted, #66766d)); margin-top: .25rem; }
+.am-check { display: flex; gap: .6rem; align-items: center; font-weight: 600; }
+.am-check input { width: auto; margin: 0; }
+.am-hist { display: grid; gap: .6rem; margin-top: .6rem; }
+.am-hist .item-row { padding: .7rem .9rem; border: 1px solid var(--border, var(--line, #e1e8e4)); border-radius: 12px;
+  background: var(--surface, var(--card, #fff)); }
+.am-hist small { color: var(--text-muted, var(--muted, #66766d)); }

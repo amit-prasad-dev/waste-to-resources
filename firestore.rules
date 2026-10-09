@@ -76,7 +76,9 @@ service cloud.firestore {
     }
 
     match /notifications/{id} {
-      allow create: if signedIn() && request.resource.data.fromId == request.auth.uid;
+      // Only an admin can create admin_message / announcement notifications (nobody can fake an admin message)
+      allow create: if signedIn() && request.resource.data.fromId == request.auth.uid
+                        && (!(request.resource.data.type in ['admin_message', 'announcement']) || isAdmin());
       allow read, delete: if signedIn() && resource.data.userId == request.auth.uid;
       allow update: if signedIn() && resource.data.userId == request.auth.uid
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
@@ -86,6 +88,12 @@ service cloud.firestore {
     match /watches/{id} {
       allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
       allow read, delete: if signedIn();
+    }
+
+    // Log of messages sent by admins
+    match /adminMessages/{id} {
+      allow create: if isAdmin() && request.resource.data.sentBy == request.auth.uid;
+      allow read, delete: if isAdmin();
     }
 
     match /reports/{id} {
